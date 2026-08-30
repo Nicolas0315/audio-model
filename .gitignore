@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.ipynb_checkpoints/
+
+# 生成物・入力素材（バイナリはコミットしない）
+outputs/
+samples/
+*.wav
+*.mp3
+*.flac
+*.mid
+!examples/**/*.mid
+
+# Demucs モデルキャッシュ
+*.th
+pretrained_models/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 明示的な安全策: 第三者コード/漏洩物は絶対に取り込まない
+suno-ai/
+*.git.zip
+*_meta.sqlite
+*.torrent

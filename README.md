@@ -1,0 +1,60 @@
+# audio-model
+
+物理モデリング音源の内製に向けた研究・実装リポジトリ。
+実楽器の音を「サンプルとして貼る」のではなく、物理モデル（波形導波管・モーダル合成）と
+そのパラメータ推定（analysis-by-synthesis）で再構築し、最終的に MIDI / MIDI 2.0・MPE で
+演奏可能な音源（VST3 / CLAP）へ育てることを目標とする。
+
+## なぜ Demucs か
+
+物理モデルを実楽器に似せるには「その楽器だけのクリーンなターゲット音」が要る。
+しかし現実の音源はミックス済みで、単一楽器の素材は手に入りにくい。
+[Demucs](https://github.com/adefossez/demucs)（Meta 発の音源分離、MIT）でミックスを
+ステム（ドラム / ベース / ギター / ピアノ / ボーカル / その他）に分離し、
+分離したステムをパラメータ推定パイプラインの入力にする。
+
+```
+ミックス音源 ──Demucs──▶ 楽器ステム ──分析──▶ 物理パラメータ ──合成──▶ 物理モデル音源
+                          (guitar/piano/bass)   (モード/減衰/f0/B)      (MIDIで演奏)
+```
+
+htdemucs_6s モデルは guitar / piano を独立ステムとして出せるため、
+撥弦（ギター＝waveguide）と打弦（ピアノ＝モーダル/waveguide）の
+モデリング・ターゲット抽出に直接使える。
+
+## 構成
+
+| パス | 役割 |
+|---|---|
+| `src/physmod/core.py` | 物理モデル本体。拡張Karplus-Strong（波形導波管）撥弦、モーダル合成打楽器、モード推定（analysis-by-synthesis）、SMF読み書き＋レンダリング |
+| `src/pipeline/demucs_separate.py` | Demucsラッパ。ミックス→ステム分離、分離stemを物理モデル分析に橋渡し |
+| `examples/run_poc.py` | 物理モデルPoC一式（ピッチ精度・モード一致・推定往復・MIDI経路）を再実行 |
+| `examples/mix_to_model.py` | ミックス音源→Demucs分離→ステムのモード推定→再合成までを通す実パイプライン |
+| `docs/` | 手法マップ・設計メモ |
+| `samples/` | 入力音源置き場（gitignore） |
+| `outputs/` | 生成物置き場（gitignore） |
+
+## セットアップ
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate           # Windows
+pip install -r requirements.txt
+# GPU (RTX4090等) を使う場合は torch を CUDA 版で:
+pip install torch --index-url https://download.pytorch.org/whl/cu124
+```
+
+## 使い方
+
+```bash
+# 物理モデルPoC（依存 numpy/scipy のみ、機械学習なし）
+python examples/run_poc.py
+
+# ミックス音源を分離して、ステムから物理パラメータを推定
+python examples/mix_to_model.py samples/your_track.wav --instrument guitar
+```
+
+## ライセンス / 出所の方針
+
+本リポジトリは公開研究・OSS（Demucs, STK, Faust, DDSP 等）のみを土台とする独自実装。
+第三者の漏洩ソースコード・非公開の営業秘密は一切取り込まない。

@@ -1,0 +1,9 @@
+# 物理モデルPoC（機械学習なし）に必要な最小依存
+numpy>=1.26
+scipy>=1.11
+soundfile>=0.12
+
+# 音源分離パイプライン用（Demucs）
+# torch はGPU利用時 CUDA版を別途:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu124
+demucs>=4.0.1
