@@ -27,13 +27,17 @@ htdemucs_6s モデルは guitar / piano を独立ステムとして出せるた�
 | パス | 役割 |
 |---|---|
 | `src/physmod/core.py` | 物理モデル本体。拡張Karplus-Strong（波形導波管）撥弦、モーダル合成打楽器、モード推定（analysis-by-synthesis）、SMF読み書き＋レンダリング |
+| `src/physmod/piano.py` | 物理モデルピアノ（Pianoteq参照・サンプル不使用）。剛性インハーモニシティ＋ハンマー打弦＋複弦うなり＋二段階減衰＋響板 |
 | `src/neural/ddsp.py` | DDSP（微分可能DSP）。harmonic+noise 微分可能シンセ、GRUデコーダ、multi-scale STFT損失、f0/ラウドネス特徴 |
 | `src/neural/data.py` | DDSP学習用のモノフォニック楽器コーパス生成（実ステムと同形） |
 | `src/pipeline/demucs_separate.py` | Demucsラッパ。ミックス→ステム分離、分離stemを物理モデル分析に橋渡し |
 | `examples/run_poc.py` | 物理モデルPoC一式（ピッチ精度・モード一致・推定往復・MIDI経路）を再実行 |
+| `examples/piano_demo.py` | 物理ピアノの検証（設計vs回収インハーモニシティ）＋デモ音源＋MIDI演奏 |
+| `examples/retrain_from_stem.py` | 実録音/Demucs分離ステムからDDSPを実音色で再学習 |
 | `examples/mix_to_model.py` | ミックス音源→Demucs分離→ステムのモード推定→再合成までを通す実パイプライン |
 | `examples/train_ddsp.py` | DDSPオートエンコーダを学習完走（GPU）。f0/ラウドネスから音色を制御可能に再構成 |
 | `docs/architecture.md` | 音声生成の2系譜（コーデック+LM / 微分可能DSP）と本プロジェクトの立ち位置、Suno公開アーキ参照 |
+| `docs/piano_model.md` | 物理ピアノの設計（Pianoteq公開アーキとの対応）と検証結果 |
 | `docs/ddsp_training_report.md` | DDSP学習の結果（学習曲線・汎化指標）※学習実行で生成 |
 | `samples/` | 入力音源置き場（gitignore） |
 | `outputs/` | 生成物置き場（gitignore） |
