@@ -33,6 +33,7 @@ htdemucs_6s モデルは guitar / piano を独立ステムとして出せるた�
 | `src/pipeline/demucs_separate.py` | Demucsラッパ。ミックス→ステム分離、分離stemを物理モデル分析に橋渡し |
 | `examples/run_poc.py` | 物理モデルPoC一式（ピッチ精度・モード一致・推定往復・MIDI経路）を再実行 |
 | `examples/piano_demo.py` | 物理ピアノの検証（設計vs回収インハーモニシティ）＋デモ音源＋MIDI演奏 |
+| `examples/make_piano_corpus.py` | 物理ピアノからDDSP学習用のモノフォニック独奏を生成（ライセンス問題ゼロの素材） |
 | `examples/retrain_from_stem.py` | 実録音/Demucs分離ステムからDDSPを実音色で再学習 |
 | `examples/mix_to_model.py` | ミックス音源→Demucs分離→ステムのモード推定→再合成までを通す実パイプライン |
 | `examples/train_ddsp.py` | DDSPオートエンコーダを学習完走（GPU）。f0/ラウドネスから音色を制御可能に再構成 |
