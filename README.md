@@ -35,10 +35,13 @@ htdemucs_6s モデルは guitar / piano を独立ステムとして出せるた�
 | `examples/piano_demo.py` | 物理ピアノの検証（設計vs回収インハーモニシティ）＋デモ音源＋MIDI演奏 |
 | `examples/make_piano_corpus.py` | 物理ピアノからDDSP学習用のモノフォニック独奏を生成（ライセンス問題ゼロの素材） |
 | `examples/retrain_from_stem.py` | 実録音/Demucs分離ステムからDDSPを実音色で再学習 |
+| `examples/train_from_dataset.py` | 公開単音データセット(TinySOL/NSynth/汎用)でDDSP学習（ピッチ既知→CREPE不要） |
+| `src/pipeline/note_dataset.py` | 単音データセットのローダ（TinySOL/NSynth/音名入りフォルダ） |
 | `examples/mix_to_model.py` | ミックス音源→Demucs分離→ステムのモード推定→再合成までを通す実パイプライン |
 | `examples/train_ddsp.py` | DDSPオートエンコーダを学習完走（GPU）。f0/ラウドネスから音色を制御可能に再構成 |
 | `docs/architecture.md` | 音声生成の2系譜（コーデック+LM / 微分可能DSP）と本プロジェクトの立ち位置、Suno公開アーキ参照 |
 | `docs/piano_model.md` | 物理ピアノの設計（Pianoteq公開アーキとの対応）と検証結果 |
+| `docs/datasets.md` | 公開データセットのライセンス整理（商用可否）とDDSP学習の実務要件 |
 | `docs/ddsp_training_report.md` | DDSP学習の結果（学習曲線・汎化指標）※学習実行で生成 |
 | `samples/` | 入力音源置き場（gitignore） |
 | `outputs/` | 生成物置き場（gitignore） |
