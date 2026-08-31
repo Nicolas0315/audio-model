@@ -42,6 +42,7 @@ htdemucs_6s モデルは guitar / piano を独立ステムとして出せるた�
 | `docs/architecture.md` | 音声生成の2系譜（コーデック+LM / 微分可能DSP）と本プロジェクトの立ち位置、Suno公開アーキ参照 |
 | `docs/piano_model.md` | 物理ピアノの設計（Pianoteq公開アーキとの対応）と検証結果 |
 | `docs/datasets.md` | 公開データセットのライセンス整理（商用可否）とDDSP学習の実務要件 |
+| `docs/violin_ddsp_report.md` | TinySOL Violin（CC BY 4.0）でのDDSP学習結果と損失比較、性能修正の記録 |
 | `docs/ddsp_training_report.md` | DDSP学習の結果（学習曲線・汎化指標）※学習実行で生成 |
 | `samples/` | 入力音源置き場（gitignore） |
 | `outputs/` | 生成物置き場（gitignore） |

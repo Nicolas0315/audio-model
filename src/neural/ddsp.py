@@ -104,28 +104,24 @@ class FilteredNoise(nn.Module):
 
         # フレーム毎に白色雑音を生成し、FIR で畳み込み → overlap-add
         frame_len = self.hop
-        pad = self.fir_size
-        out = torch.zeros(B, n_samples + pad, device=noise_mag.device)
         white = torch.rand(B, T, frame_len, device=noise_mag.device) * 2.0 - 1.0
-        # 各フレーム: conv(white_frame, ir_frame) を配置
-        # FFT ベースで一括畳み込み
+        # 各フレーム: conv(white_frame, ir_frame) を FFT ベースで一括畳み込み
         conv_len = frame_len + self.fir_size - 1
         n_fft = 1
         while n_fft < conv_len:
             n_fft *= 2
         W = torch.fft.rfft(white, n=n_fft, dim=-1)            # (B, T, F)
         H = torch.fft.rfft(ir, n=n_fft, dim=-1)               # (B, T, F)
-        y = torch.fft.irfft(W * H, n=n_fft, dim=-1)           # (B, T, conv_len<=n_fft)
-        y = y[..., :conv_len]
-        # overlap-add
-        for t in range(T):
-            start = t * frame_len
-            end = start + conv_len
-            if start >= n_samples:
-                break
-            seg = y[:, t, :]
-            e = min(end, n_samples + pad)
-            out[:, start:e] += seg[:, : e - start]
+        y = torch.fft.irfft(W * H, n=n_fft, dim=-1)[..., :conv_len]  # (B, T, conv_len)
+        # overlap-add をベクトル化（F.fold で一括、Python ループ廃止）
+        # フレーム t を start=t*frame_len に加算 → col2im と等価
+        yt = y.transpose(1, 2).contiguous()                  # (B, conv_len, T)
+        out_len = (T - 1) * frame_len + conv_len
+        folded = F.fold(yt, output_size=(1, out_len),
+                        kernel_size=(1, conv_len), stride=(1, frame_len))  # (B,1,1,out_len)
+        out = folded.reshape(B, out_len)
+        if out.shape[1] < n_samples:
+            out = F.pad(out, (0, n_samples - out.shape[1]))
         return out[:, :n_samples]
 
 
