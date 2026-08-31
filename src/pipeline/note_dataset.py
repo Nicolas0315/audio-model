@@ -72,7 +72,9 @@ def load_tinysol(root: str, metadata_csv: str, instrument: Optional[str] = None,
         reader = csv.DictReader(f)
         cols = {c.lower(): c for c in reader.fieldnames}
         path_col = cols.get("path") or cols.get("filepath") or reader.fieldnames[0]
-        inst_col = cols.get("instrument (abbr.)") or cols.get("instrument") or None
+        # フルネーム列を優先（略称"Vn"では"Violin"にマッチしないため）
+        inst_col = (cols.get("instrument (in full)") or cols.get("instrument (abbr.)")
+                    or cols.get("instrument") or None)
         pitch_col = cols.get("pitch")
         for row in reader:
             rel = row[path_col]

@@ -84,25 +84,29 @@ def build_control(notes, fs=SR, hop=HOP):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("midi", nargs="?", default=None, help="SMFファイル(省略で内蔵デモ)")
+    ap.add_argument("--ckpt", default=CKPT, help="学習済みモデル(.pt)。既定はdDDSP汎用")
+    ap.add_argument("--tag", default=None, help="出力ファイル名のタグ(例: violin)")
     args = ap.parse_args()
 
-    if not os.path.exists(CKPT):
-        print("エラー: 学習済みモデルが無い。先に examples/train_ddsp.py を実行。")
+    ckpt_path = args.ckpt
+    if not os.path.exists(ckpt_path):
+        print(f"エラー: 学習済みモデルが無い: {ckpt_path}。先に学習を実行。")
         sys.exit(1)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = DDSPAutoencoder(sample_rate=SR, hop=HOP).to(device)
-    ckpt = torch.load(CKPT, map_location=device, weights_only=True)
+    ckpt = torch.load(ckpt_path, map_location=device, weights_only=True)
     model.load_state_dict(ckpt["model"])
     model.eval()
-    print(f"モデル読込: step={ckpt.get('step')} val_loss={ckpt.get('val_loss'):.4f} device={device}")
+    print(f"モデル読込: {os.path.basename(ckpt_path)} step={ckpt.get('step')} "
+          f"val_loss={ckpt.get('val_loss'):.4f} device={device}")
 
     if args.midi:
         notes = midi_file_to_notes(args.midi)
-        tag = os.path.splitext(os.path.basename(args.midi))[0]
+        tag = args.tag or os.path.splitext(os.path.basename(args.midi))[0]
     else:
         notes = demo_notes()
-        tag = "demo"
+        tag = args.tag or "demo"
         # デモのSMFも書き出しておく（DAWで開ける）
         tpq = 480
         ev = []

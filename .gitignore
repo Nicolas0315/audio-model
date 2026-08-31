@@ -9,6 +9,8 @@ venv/
 # 生成物・入力素材（バイナリはコミットしない）
 outputs/
 samples/
+data/
+*.tar.gz
 *.wav
 *.mp3
 *.flac
