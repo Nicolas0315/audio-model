@@ -66,6 +66,15 @@ python examples/run_poc.py
 python examples/mix_to_model.py samples/your_track.wav --instrument guitar
 ```
 
+## オフライン検証
+
+```bash
+python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2'
+python -m unittest discover -s tests -v
+```
+
+テストは合成した信号と一時MIDIファイルだけを使い、音源・学習済みモデル・ネットワークを必要としない。ピッチ計測、モード推定、MIDIの読み戻しとレンダリングの契約を確認する。実録音への音色再現性、Demucs分離品質、学習品質は評価対象外。
+
 ## ライセンス / 出所の方針
 
 本リポジトリは公開研究・OSS（Demucs, STK, Faust, DDSP 等）のみを土台とする独自実装。

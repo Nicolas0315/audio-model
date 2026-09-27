@@ -254,9 +254,9 @@ def render_midi(events, fs=FS):
         v = vel / 127
         tail = 1.8
         if ch == 0:
-            y = ks_pluck(f0, d + tail, velocity=v)
+            y = ks_pluck(f0, d + tail, fs=fs, velocity=v)
         else:
-            y = modal_strike(f0, d + tail, velocity=v)
+            y = modal_strike(f0, d + tail, fs=fs, velocity=v)
         i0 = int(s * fs)
         mix[i0:i0+len(y)] += y * 0.5
     return mix
